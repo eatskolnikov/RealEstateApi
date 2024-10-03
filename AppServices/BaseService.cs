@@ -52,7 +52,7 @@ public abstract class BaseService<T> : IBaseService<T> where T:BaseEntity
 
     public async Task<TaskResult> Update(T entity)
     {
-        var taskResult = ValiateUpdate(entity); 
+        var taskResult = ValidateUpdate(entity); 
         if(taskResult.Success)
         {
             try{
@@ -66,14 +66,14 @@ public abstract class BaseService<T> : IBaseService<T> where T:BaseEntity
         return taskResult;
     }
     public abstract TaskResult ValidateInsert(T entity);
-    public abstract TaskResult ValiateUpdate(T entity);
+    public abstract TaskResult ValidateUpdate(T entity);
     public abstract TaskResult ValidateDelete(T entity);
 }
 
 public interface IBaseService<T> where T:BaseEntity{
 
     TaskResult ValidateInsert(T entity);
-    TaskResult ValiateUpdate(T entity);
+    TaskResult ValidateUpdate(T entity);
     TaskResult ValidateDelete(T entity);
     Task<TaskResult<T>> Insert(T entity);
     Task<TaskResult> Update(T entity);

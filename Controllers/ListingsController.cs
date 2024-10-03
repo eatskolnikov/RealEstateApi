@@ -14,7 +14,6 @@ namespace RealEstateListingApi.Controllers
         private readonly IListingsService _listingsService;
         public ListingsController(IListingsService listingsService)  //(ApplicationDbContext context)
         {
-            // _context = context;
             _listingsService = listingsService;
         }
 
@@ -31,17 +30,24 @@ namespace RealEstateListingApi.Controllers
         [Tags("Listings Management")]
         public async Task<ActionResult<Listing>> AddListing([FromBody] Listing listing)
         {
-            // _context.Listings.Add(listing);
-            // _context.SaveChanges();
+            if (!ModelState.IsValid)
+            {
+                var errors = ModelState.Values.SelectMany(v => v.Errors)
+                    .Select(e => e.ErrorMessage).ToList();
 
-            if(ModelState.IsValid){
-                var result = await _listingsService.Insert(listing);
-                if(result.Success){
-                    return CreatedAtAction(nameof(GetListingById), new { id = result.Data.Id }, listing);
-                }
-                return Ok(result);
+                var response = new
+                {
+                    Title = "There are validation errors in your request.",
+                    Errors = errors
+                };
+
+                return BadRequest(response);
             }
-            return Ok(ModelState);
+            var result = await _listingsService.Insert(listing);
+            if(result.Success){
+                return CreatedAtAction(nameof(GetListingById), new { id = result.Data.Id }, listing);
+            }
+            return Ok(result);
         }
 
         // Tag this operation as "Listings Retrieval"

@@ -7,8 +7,11 @@ public class ListingsService : BaseService<Listing>, IListingsService
     {
     }
 
-    public override TaskResult ValiateUpdate(Listing entity)
+    public override TaskResult ValidateUpdate(Listing entity)
     {
+        if(string.IsNullOrEmpty(entity.Title)){
+            return new TaskResult(false, "Title cannot be empty");
+        }
         return new TaskResult(true, string.Empty);
     }
 
